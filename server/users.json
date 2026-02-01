@@ -1,0 +1,47 @@
+[
+  {
+    "username": "ron",
+    "password": "alexis",
+    "role": "student"
+  },
+  {
+    "username": "alexis",
+    "password": "ronron",
+    "role": "teacher"
+  },
+  {
+    "username": "ronron",
+    "password": "alexis12",
+    "role": "student"
+  },
+  {
+    "username": "Alexis",
+    "password": "ronron12",
+    "role": "student"
+  },
+  {
+    "username": "Ron Alexis Dela Cruz",
+    "password": "alexiscruz12",
+    "role": "student"
+  },
+  {
+    "username": "Ron Alexis",
+    "password": "Alexis123",
+    "role": "student"
+  },
+  {
+    "username": "teacher_test",
+    "password": "1234",
+    "role": "teacher"
+  },
+  {
+    "username": "Ronron",
+    "password": "alexis123",
+    "role": "teacher"
+  },
+  {
+    "username": "alexisron",
+    "password": "ronron123",
+    "role": "student"
+  }
+]
