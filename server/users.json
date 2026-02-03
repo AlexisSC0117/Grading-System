@@ -43,5 +43,10 @@
     "username": "alexisron",
     "password": "ronron123",
     "role": "student"
+  },
+  {
+    "username": "Alexis ron",
+    "password": "alexis12",
+    "role": "student"
   }
 ]
