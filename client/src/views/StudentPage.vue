@@ -1,58 +1,38 @@
 <script setup>
-
-import { useRouter } from "vue-router"
-
-const router = useRouter()
-
-onMounted(() => {
-  if (localStorage.getItem("role") !== "student") {
-    alert("Access denied!")
-    router.push("/")
-  }
-})
-
 import { ref, onMounted } from "vue"
 import axios from "axios"
 
 const name = ref("")
-const selected = ref("")
-const subjects = ref([])
 const activities = ref([])
-const answers = ref({})
-
-onMounted(async () => {
-  const res = await axios.get("http://localhost:3000/subjects")
-  subjects.value = res.data
-})
+const answer = ref("")
 
 const loadActivities = async () => {
-  if (!selected.value) return
-  const res = await axios.get(
-    `http://localhost:3000/activities/${selected.value.subject}`
-  )
-  activities.value = res.data
+  try {
+    const res = await axios.get("http://localhost:3000/activities")
+    activities.value = res.data
+  } catch {
+    alert("Failed to load activities")
+  }
 }
 
-const submitAttendance = async () => {
-  await axios.post("http://localhost:3000/attendance", {
-    name: name.value,
-    subject: selected.value.subject,
-    year: selected.value.year,
-    time: new Date().toLocaleTimeString()
-  })
+const submitAnswer = async (activity) => {
+  if (!answer.value) {
+    alert("Write an answer")
+    return
+  }
 
-  await loadActivities()
-  alert("Attendance saved! Activities loaded.")
-}
-
-const submitAnswer = async (title) => {
   await axios.post("http://localhost:3000/submit-answer", {
-    studentName: name.value,
-    activityTitle: title,
-    answer: answers.value[title]
+    student: name.value,
+    subject: activity.subject,
+    title: activity.title,
+    answer: answer.value
   })
+
+  answer.value = ""
   alert("Answer submitted!")
 }
+
+onMounted(loadActivities)
 </script>
 
 <template>
@@ -61,47 +41,27 @@ const submitAnswer = async (title) => {
 
     <input v-model="name" placeholder="Student Name" />
 
-    <br><br>
-
-    <select v-model="selected">
-      <option disabled value="">Select Subject</option>
-      <option v-for="(s, index) in subjects" :key="index" :value="s">
-        {{ s.subject }} — {{ s.year }}
-      </option>
-    </select>
-
-    <br><br>
-
-    <button @click="submitAttendance">Submit Attendance</button>
-
-    <hr style="margin:20px 0;" />
-
-    <h3>Activities</h3>
-
-    <div v-for="(a, index) in activities" :key="index" style="margin-bottom:20px;">
-      <h4>{{ a.title }}</h4>
-      <p>{{ a.question }}</p>
+    <div v-for="(act, index) in activities" :key="index" style="margin-top:20px;">
+      <h3>{{ act.subject }} — {{ act.title }}</h3>
+      <p>{{ act.question }}</p>
 
       <textarea 
-        v-model="answers[a.title]" 
-        placeholder="Write your answer..."
+        v-model="answer" 
+        placeholder="Write your answer"
+        style="width:100%; height:80px;"
       ></textarea>
 
       <br><br>
 
-      <button @click="submitAnswer(a.title)">Submit Answer</button>
+      <button @click="submitAnswer(act)">
+        Submit Answer
+      </button>
     </div>
   </div>
 </template>
 
-
-<style>
-.page {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+<style scoped>
+textarea {
+  padding: 10px;
 }
-
 </style>
